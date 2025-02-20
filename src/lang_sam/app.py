@@ -1,5 +1,5 @@
-import os
 from io import BytesIO
+from pathlib import Path
 
 import gradio as gr
 import requests
@@ -39,15 +39,25 @@ def inference(sam_type, box_threshold, text_threshold, image, text_prompt):
             print(f"Failed to process response image: {e}")
             return None
     else:
-        print(f"Request failed with status code {response.status_code}: {response.text}")
+        print(
+            f"Request failed with status code {response.status_code}: {response.text}"
+        )
         return None
 
 
 with gr.Blocks(title="lang-sam") as blocks:
     with gr.Row():
-        sam_model_choices = gr.Dropdown(choices=list(SAM_MODELS.keys()), label="SAM Model", value="sam2.1_hiera_small")
-        box_threshold = gr.Slider(minimum=0.0, maximum=1.0, value=0.3, label="Box Threshold")
-        text_threshold = gr.Slider(minimum=0.0, maximum=1.0, value=0.25, label="Text Threshold")
+        sam_model_choices = gr.Dropdown(
+            choices=list(SAM_MODELS.keys()),
+            label="SAM Model",
+            value="sam2.1_hiera_small",
+        )
+        box_threshold = gr.Slider(
+            minimum=0.0, maximum=1.0, value=0.3, label="Box Threshold"
+        )
+        text_threshold = gr.Slider(
+            minimum=0.0, maximum=1.0, value=0.25, label="Text Threshold"
+        )
     with gr.Row():
         image_input = gr.Image(type="filepath", label="Input Image")
         output_image = gr.Image(type="pil", label="Output Image")
@@ -57,7 +67,13 @@ with gr.Blocks(title="lang-sam") as blocks:
 
     submit_btn.click(
         fn=inference,
-        inputs=[sam_model_choices, box_threshold, text_threshold, image_input, text_prompt],
+        inputs=[
+            sam_model_choices,
+            box_threshold,
+            text_threshold,
+            image_input,
+            text_prompt,
+        ],
         outputs=output_image,
     )
 
@@ -66,33 +82,45 @@ with gr.Blocks(title="lang-sam") as blocks:
             "sam2.1_hiera_small",
             0.32,
             0.25,
-            os.path.join(os.path.dirname(__file__), "assets", "fruits.jpg"),
+            Path(__file__).parent.parent.parent / "assets" / "fruits.jpg",
             "kiwi. watermelon. blueberry.",
         ],
         [
             "sam2.1_hiera_small",
             0.3,
             0.25,
-            os.path.join(os.path.dirname(__file__), "assets", "car.jpeg"),
+            Path(__file__).parent.parent.parent / "assets" / "car.jpeg",
             "wheel.",
         ],
         [
             "sam2.1_hiera_small",
             0.3,
             0.25,
-            os.path.join(os.path.dirname(__file__), "assets", "food.jpg"),
+            Path(__file__).parent.parent.parent / "assets" / "food.jpg",
             "food.",
         ],
     ]
 
     gr.Examples(
         examples=examples,
-        inputs=[sam_model_choices, box_threshold, text_threshold, image_input, text_prompt],
+        inputs=[
+            sam_model_choices,
+            box_threshold,
+            text_threshold,
+            image_input,
+            text_prompt,
+        ],
         outputs=output_image,
     )
 
 server.app = gr.mount_gradio_app(server.app, blocks, path="/gradio")
 
-if __name__ == "__main__":
+
+def main():
+    """Entrypoint."""
     print(f"Starting LitServe and Gradio server on port {PORT}...")
     server.run(port=PORT)
+
+
+if __name__ == "__main__":
+    main()

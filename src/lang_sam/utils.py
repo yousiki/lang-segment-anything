@@ -26,9 +26,15 @@ def draw_image(image_rgb, masks, xyxy, probs, labels):
         confidence=probs,
         class_id=np.array(class_id),
     )
-    annotated_image = box_annotator.annotate(scene=image_rgb.copy(), detections=detections)
-    annotated_image = label_annotator.annotate(scene=annotated_image, detections=detections, labels=labels)
-    annotated_image = mask_annotator.annotate(scene=annotated_image, detections=detections)
+    annotated_image = box_annotator.annotate(
+        scene=image_rgb.copy(), detections=detections
+    )
+    annotated_image = label_annotator.annotate(
+        scene=annotated_image, detections=detections, labels=labels
+    )
+    annotated_image = mask_annotator.annotate(
+        scene=annotated_image, detections=detections
+    )
     return annotated_image
 
 

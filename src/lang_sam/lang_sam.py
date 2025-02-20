@@ -7,7 +7,9 @@ from lang_sam.models.utils import DEVICE
 
 
 class LangSAM:
-    def __init__(self, sam_type="sam2.1_hiera_small", ckpt_path: str | None = None, device=DEVICE):
+    def __init__(
+        self, sam_type="sam2.1_hiera_small", ckpt_path: str | None = None, device=DEVICE
+    ):
         self.sam_type = sam_type
 
         self.sam = SAM()
@@ -41,13 +43,18 @@ class LangSAM:
             }, ...]
         """
 
-        gdino_results = self.gdino.predict(images_pil, texts_prompt, box_threshold, text_threshold)
+        gdino_results = self.gdino.predict(
+            images_pil, texts_prompt, box_threshold, text_threshold
+        )
         all_results = []
         sam_images = []
         sam_boxes = []
         sam_indices = []
         for idx, result in enumerate(gdino_results):
-            result = {k: (v.cpu().numpy() if hasattr(v, "numpy") else v) for k, v in result.items()}
+            result = {
+                k: (v.cpu().numpy() if hasattr(v, "numpy") else v)
+                for k, v in result.items()
+            }
             processed_result = {
                 **result,
                 "masks": [],

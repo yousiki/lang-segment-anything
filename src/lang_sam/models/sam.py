@@ -44,16 +44,22 @@ class SAM:
     def _load_checkpoint(self, model: torch.nn.Module):
         if self.ckpt_path is None:
             checkpoint_url = SAM_MODELS[self.sam_type]["url"]
-            state_dict = torch.hub.load_state_dict_from_url(checkpoint_url, map_location="cpu")["model"]
+            state_dict = torch.hub.load_state_dict_from_url(
+                checkpoint_url, map_location="cpu"
+            )["model"]
         else:
             checkpoint_url = self.ckpt_path  # Ensure checkpoint_url is defined
-            state_dict = torch.load(self.ckpt_path, map_location="cpu", weights_only=True)["model"]
+            state_dict = torch.load(
+                self.ckpt_path, map_location="cpu", weights_only=True
+            )["model"]
         try:
             model.load_state_dict(state_dict, strict=True)
         except Exception as e:
-            raise ValueError(f"Problem loading SAM please make sure you have the right model type: {self.sam_type} \
+            raise ValueError(
+                f"Problem loading SAM please make sure you have the right model type: {self.sam_type} \
                 and a working checkpoint: {checkpoint_url}. Recommend deleting the checkpoint and \
-                re-downloading it. Error: {e}")
+                re-downloading it. Error: {e}"
+            )
 
     def generate(self, image_rgb: np.ndarray) -> list[dict]:
         """
@@ -73,7 +79,9 @@ class SAM:
         sam2_result = self.mask_generator.generate(image_rgb)
         return sam2_result
 
-    def predict(self, image_rgb: np.ndarray, xyxy: np.ndarray) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    def predict(
+        self, image_rgb: np.ndarray, xyxy: np.ndarray
+    ) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
         self.predictor.set_image(image_rgb)
         masks, scores, logits = self.predictor.predict(box=xyxy, multimask_output=False)
         if len(masks.shape) > 3:
@@ -87,9 +95,16 @@ class SAM:
     ) -> tuple[list[np.ndarray], list[np.ndarray], list[np.ndarray]]:
         self.predictor.set_image_batch(images_rgb)
 
-        masks, scores, logits = self.predictor.predict_batch(box_batch=xyxy, multimask_output=False)
+        masks, scores, logits = self.predictor.predict_batch(
+            box_batch=xyxy, multimask_output=False
+        )
 
-        masks = [np.squeeze(mask, axis=1) if len(mask.shape) > 3 else mask for mask in masks]
+        masks = [
+            np.squeeze(mask, axis=1) if len(mask.shape) > 3 else mask for mask in masks
+        ]
         scores = [np.squeeze(score) for score in scores]
-        logits = [np.squeeze(logit, axis=1) if len(logit.shape) > 3 else logit for logit in logits]
+        logits = [
+            np.squeeze(logit, axis=1) if len(logit.shape) > 3 else logit
+            for logit in logits
+        ]
         return masks, scores, logits
