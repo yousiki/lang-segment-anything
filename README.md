@@ -37,6 +37,10 @@ Build and run the image.
 # Build docker image locally
 docker build --t lang-segment-anything:latest .
 
+# Or use pre-built image from ghcr
+docker pull ghcr.io/yousiki/lang-segment-anything:latest
+docker tag ghcr.io/yousiki/lang-segment-anything:latest lang-segment-anything:latest
+
 # Start docker container
 docker run --rm \
     --device=nvidia.com/gpu=all \
