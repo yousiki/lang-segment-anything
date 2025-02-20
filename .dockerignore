@@ -1,1 +1,6 @@
-.venv
+*
+!assets/*.*g
+!pyproject.toml
+!README.md
+!requirements*
+!src
