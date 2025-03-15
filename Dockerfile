@@ -12,7 +12,8 @@ RUN --mount=target=/var/lib/apt/lists,type=cache,sharing=locked \
     build-essential \
     curl \
     git \
-    libgl1
+    libgl1 \
+    libglib2.0-0
 
 COPY . /lang-segment-anything
 
