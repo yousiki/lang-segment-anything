@@ -12,7 +12,7 @@ RUN --mount=target=/var/lib/apt/lists,type=cache,sharing=locked \
     build-essential \
     curl \
     git \
-    libgl1-mesa-glx
+    libgl1
 
 COPY . /lang-segment-anything
 
