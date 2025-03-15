@@ -11,7 +11,8 @@ RUN --mount=target=/var/lib/apt/lists,type=cache,sharing=locked \
     apt-get install -y --no-install-recommends \
     build-essential \
     curl \
-    git
+    git \
+    libgl1-mesa-glx
 
 COPY . /lang-segment-anything
 
